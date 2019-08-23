@@ -3,6 +3,7 @@ package aster
 import (
 	"fmt"
 	"go/ast"
+	"strings"
 )
 
 type FieldType struct {
@@ -55,7 +56,7 @@ func NewStructFieldType(astField *ast.Field) (*StructFieldType, error) {
 		FieldType: *fieldType,
 	}
 	if astField.Tag != nil {
-		structFieldType.Tag = TagType(astField.Tag.Value)
+		structFieldType.Tag = TagType(strings.Trim(astField.Tag.Value, "`"))
 	}
 	return structFieldType, nil
 }

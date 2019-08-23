@@ -27,6 +27,12 @@ func NewInterfaceType(astGenDecl *ast.GenDecl, typeSpec *ast.TypeSpec, astInterf
 					return nil, err
 				}
 			case *ast.Ident:
+				// 嵌入自己包的接口
+				// 在interface中嵌入的子interface
+				// TODO: 会导致无法拿到Interface的所有方法，需要额外处理。
+				// fmt.Println("NewInterfaceType(): 在interface中嵌入的子interface，会导致无法拿到Interface的所有方法，需要额外处理。")
+			case *ast.SelectorExpr:
+				// 嵌入其他包的接口
 				// 在interface中嵌入的子interface
 				// TODO: 会导致无法拿到Interface的所有方法，需要额外处理。
 				// fmt.Println("NewInterfaceType(): 在interface中嵌入的子interface，会导致无法拿到Interface的所有方法，需要额外处理。")
