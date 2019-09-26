@@ -10,7 +10,7 @@ import (
 func ParseDir(dirPath string, fileFilter func(os.FileInfo) bool) ([]*PackageType, error) {
 	var err error
 	fSet := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fSet, dirPath, fileFilter, 0)
+	pkgs, err := parser.ParseDir(fSet, dirPath, fileFilter, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
