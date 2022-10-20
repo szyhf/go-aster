@@ -18,10 +18,13 @@ func NewMethodType(astFuncDecl *ast.FuncDecl) (*MethodType, error) {
 		return nil, err
 	}
 
-	fieldType, err := NewFieldType(astFuncDecl.Recv.List[0])
+	recvier := astFuncDecl.Recv.List[0]
+	fieldTypes, err := NewFieldTypes(recvier)
 	if err != nil {
 		return nil, err
 	}
+	// recevier没有省略语法的场景
+	fieldType := fieldTypes[0]
 
 	methodType := &MethodType{
 		FuncType: *funcType,
@@ -35,10 +38,10 @@ func NewMethodType(astFuncDecl *ast.FuncDecl) (*MethodType, error) {
 func (this *MethodType) String() string {
 	sb := strings.Builder{}
 
-	sb.WriteString("func (" + this.Receiver.Name + " " + this.Receiver.Type.String() + ") " + this.Name + "(")
+	sb.WriteString("func (" + this.Receiver.Name + " " + this.Receiver.Type.GetDecl() + ") " + this.Name + "(")
 
 	for i, paramType := range this.Params {
-		sb.WriteString(paramType.String())
+		sb.WriteString(paramType.GetDecl())
 		if i < len(this.Params)-1 {
 			sb.WriteString(", ")
 		}
@@ -49,7 +52,7 @@ func (this *MethodType) String() string {
 		sb.WriteString("(")
 	}
 	for i, resultType := range this.Results {
-		sb.WriteString(resultType.String())
+		sb.WriteString(resultType.GetDecl())
 		if i < len(this.Results)-1 {
 			sb.WriteString(", ")
 		}

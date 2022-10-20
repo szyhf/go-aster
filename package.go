@@ -46,12 +46,19 @@ func NewPackageType(pkg *ast.Package) (*PackageType, error) {
 	// 把Method统计到对应的Struct中
 	structMap := make(map[string]*StructType, len(pkgTyp.Structs))
 	for _, structType := range pkgTyp.Structs {
-		structMap[structType.Name] = structType
+		// 引入泛型以后需要注意，receiver 的名字的格式是
+		// StructName[T]，但是声明类型的名字的格式是 StructName[T any]
+		structMap[structType.GetRecvName()] = structType
+		// if strings.HasPrefix(structType.GetRecvName(), "UserGeneric") {
+		// 	log.Println(gjson.MustEncodeString(structType), structType.GetRecvName())
+		// }
 	}
+	// log.Println(structMap)
 	for _, methodType := range pkgTyp.Methods {
-		receiverName := strings.TrimLeft(methodType.Receiver.Type.String(), "*")
+		receiverName := strings.TrimLeft(methodType.Receiver.Type.GetDecl(), "*")
 		structType, ok := structMap[receiverName]
 		if !ok {
+			// log.Println(gjson.MustEncodeString(methodType))
 			return nil, fmt.Errorf("NewPackageType: unreslove method receiver.Name = %s", receiverName)
 		}
 		structType.Methods = append(structType.Methods, methodType)
@@ -164,7 +171,7 @@ func (this *PackageType) String() string {
 	}
 
 	for _, structType := range this.Structs {
-		sb.WriteString(structType.String() + "\n")
+		sb.WriteString(structType.GetDecl() + "\n")
 	}
 
 	for _, methodType := range this.Methods {

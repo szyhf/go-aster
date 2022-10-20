@@ -72,7 +72,7 @@ func (this *InterfaceType) String() string {
 	for _, fun := range this.Funcs {
 		sb.WriteString("\t" + fun.Name + "(")
 		for i, paramType := range fun.Params {
-			sb.WriteString(paramType.String())
+			sb.WriteString(paramType.GetDecl())
 			if i < len(fun.Params)-1 {
 				sb.WriteString(", ")
 			}
@@ -83,7 +83,7 @@ func (this *InterfaceType) String() string {
 			sb.WriteString("(")
 		}
 		for i, resultType := range fun.Results {
-			sb.WriteString(resultType.String())
+			sb.WriteString(resultType.GetDecl())
 			if i < len(fun.Results)-1 {
 				sb.WriteString(", ")
 			}

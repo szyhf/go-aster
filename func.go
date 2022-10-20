@@ -72,17 +72,17 @@ func NewFuncTypeByASTDecl(astDecl *ast.FuncDecl) (*FuncType, error) {
 }
 
 func (this *FuncType) ParseParam(astParamField *ast.Field) error {
-	field, err := NewFieldType(astParamField)
+	fieldTypes, err := NewFieldTypes(astParamField)
 	if err == nil {
-		this.Params = append(this.Params, field)
+		this.Params = append(this.Params, fieldTypes...)
 	}
 	return err
 }
 
 func (this *FuncType) ParseResult(astResultField *ast.Field) error {
-	field, err := NewFieldType(astResultField)
+	fieldTypes, err := NewFieldTypes(astResultField)
 	if err == nil {
-		this.Results = append(this.Results, field)
+		this.Results = append(this.Results, fieldTypes...)
 	}
 	return err
 }
@@ -99,7 +99,7 @@ func (this *FuncType) String() string {
 	sb.WriteString("func " + this.Name + "(")
 
 	for i, paramType := range this.Params {
-		sb.WriteString(paramType.String())
+		sb.WriteString(paramType.GetDecl())
 		if i < len(this.Params)-1 {
 			sb.WriteString(", ")
 		}
@@ -110,7 +110,7 @@ func (this *FuncType) String() string {
 		sb.WriteString("(")
 	}
 	for i, resultType := range this.Results {
-		sb.WriteString(resultType.String())
+		sb.WriteString(resultType.GetDecl())
 		if i < len(this.Results)-1 {
 			sb.WriteString(", ")
 		}

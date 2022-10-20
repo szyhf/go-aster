@@ -1,12 +1,14 @@
 package aster
 
 import (
+	"log"
 	"testing"
 
 	aster "github.com/szyhf/go-aster"
 )
 
 func TestParseStruct(t *testing.T) {
+	log.SetFlags(log.Lshortfile)
 	modelDir := "./data"
 
 	pkgsTyp, err := aster.ParseDir(modelDir, nil)
@@ -29,21 +31,28 @@ func TestParseStruct(t *testing.T) {
 	if curPkgType.Imports[0].Name != `github.com/szyhf/go-aster/test/data/enum` {
 		t.Fatalf("解析的包不符合预期：%s", curPkgType.Imports[0].Name)
 	}
-	t.Log(curPkgType.Funcs[0].Name)
+	// t.Log(curPkgType.Funcs[0].Name)
 
-	if len(curPkgType.Structs) != 3 {
+	if len(curPkgType.Structs) != 6 {
 		t.Fatalf("结构体数量不符合预期：%d", len(curPkgType.Structs))
 	}
-	expectStructs := map[string]string{"Like": "TableName", "User": "HEHE", "APP": "HAHA"}
+	expectStructs := map[string]string{
+		"Like":                            "TableName",
+		"User":                            "HEHE",
+		"APP":                             "HAHA",
+		"LikeGeneric[K comparable,V any]": "TableNameGeneric",
+		"APPGeneric[V any]":               "HAHAGeneric",
+		"UserGeneric[X any,Y any]":        "HEHEGeneric",
+	}
 	for _, structTyp := range curPkgType.Structs {
-		if expMethod, ok := expectStructs[structTyp.Name]; !ok {
-			t.Fatalf("结构体名称不符合预期：%s", structTyp.Name)
+		if expMethod, ok := expectStructs[structTyp.GetDeclName()]; !ok {
+			t.Fatalf("结构体名称不符合预期：%s", structTyp.GetDeclName())
 		} else {
 			if len(structTyp.Methods) != 1 {
-				t.Fatalf("结构体%s方法数量不符合预期：%d", structTyp.Name, len(structTyp.Methods))
+				t.Fatalf("结构体%s方法数量不符合预期：%d", structTyp.GetDeclName(), len(structTyp.Methods))
 			}
 			if structTyp.Methods[0].Name != expMethod {
-				t.Fatalf("结构体%s方法名称不符合预期：%s", structTyp.Name, structTyp.Methods[0].Name)
+				t.Fatalf("结构体%s方法名称不符合预期：%s", structTyp.GetDeclName(), structTyp.Methods[0].Name)
 			}
 		}
 	}
