@@ -7,13 +7,17 @@ import (
 )
 
 type InterfaceType struct {
+	PackageType *PackageType
+
 	Name  string `json:",omitempty"`
 	Funcs []*InterfaceFuncType
 	Docs  []Comment
 }
 
-func NewInterfaceType(astGenDecl *ast.GenDecl, typeSpec *ast.TypeSpec, astInterface *ast.InterfaceType) (*InterfaceType, error) {
+func (pkgType *PackageType) NewInterfaceType(astGenDecl *ast.GenDecl, typeSpec *ast.TypeSpec, astInterface *ast.InterfaceType) (*InterfaceType, error) {
 	interfaceType := &InterfaceType{
+		PackageType: pkgType,
+
 		Name: typeSpec.Name.String(),
 	}
 

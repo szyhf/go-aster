@@ -109,13 +109,13 @@ func (this *PackageType) ParseTypeSpec(astGenDecl *ast.GenDecl, typeSpec *ast.Ty
 	switch typeExpr := typeSpec.Type.(type) {
 	case *ast.StructType:
 		// 是type struct
-		structType, err := NewStructType(astGenDecl, typeSpec, typeExpr)
+		structType, err := this.NewStructType(astGenDecl, typeSpec, typeExpr)
 		if err != nil {
 			return err
 		}
 		this.Structs = append(this.Structs, structType)
 	case *ast.InterfaceType:
-		interfaceType, err := NewInterfaceType(astGenDecl, typeSpec, typeExpr)
+		interfaceType, err := this.NewInterfaceType(astGenDecl, typeSpec, typeExpr)
 		if err != nil {
 			return err
 		}

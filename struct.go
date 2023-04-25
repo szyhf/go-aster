@@ -6,6 +6,9 @@ import (
 )
 
 type StructType struct {
+	// 当前结构所属的PackageType的引用
+	PackageType *PackageType
+
 	Name       string             `json:",omitempty"`
 	TypeParams []*StructFieldType `json:",omitempty"`
 	Fields     []*StructFieldType `json:",omitempty"`
@@ -13,8 +16,10 @@ type StructType struct {
 	Docs       []Comment          `json:",omitempty"`
 }
 
-func NewStructType(astGenDecl *ast.GenDecl, typeSpec *ast.TypeSpec, astStructType *ast.StructType) (*StructType, error) {
+func (pkgType *PackageType) NewStructType(astGenDecl *ast.GenDecl, typeSpec *ast.TypeSpec, astStructType *ast.StructType) (*StructType, error) {
 	structType := &StructType{
+		PackageType: pkgType,
+
 		Name:    typeSpec.Name.Name,
 		Methods: make([]*MethodType, 0, 16),
 	}

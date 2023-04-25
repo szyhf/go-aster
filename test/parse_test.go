@@ -45,6 +45,9 @@ func TestParseStruct(t *testing.T) {
 		"UserGeneric[X any,Y any]":        "HEHEGeneric",
 	}
 	for _, structTyp := range curPkgType.Structs {
+		if structTyp.PackageType != curPkgType {
+			t.Fatalf("结构体引用的包类型不是预计的包类型")
+		}
 		if expMethod, ok := expectStructs[structTyp.GetDeclName()]; !ok {
 			t.Fatalf("结构体名称不符合预期：%s", structTyp.GetDeclName())
 		} else {
